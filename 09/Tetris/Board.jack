@@ -1,0 +1,409 @@
+// the Snake game grid.  Hack's screen is 512x256 pixels, but a single
+// pixel is too fine for a user to control, so we use 4x4 pixel blocks,
+// turning the screen into a 128x64 grid we also need a status line.  The
+// Hack screen can have 23x64 characters of text, so each line takes a
+// bit over 11 pixels.  We reserve the bottom 16 pixels, leaving 512x240
+// for game use
+
+class Board {
+
+    // the size of the grid
+    field int nRows, nCols, startRowPixel, startColPixel, squareSize, counter, filledRowCounter;
+    
+
+    // a two-dimensional array that tells us where the snake is
+    field Array grid;
+    field Shape shape;
+
+    // creates a new Board given a pixel size
+    constructor Board new() {
+        let nRows = 18;
+        let nCols = 12;
+        let startRowPixel= 10;
+        let startColPixel = 200;
+        let squareSize = 12;
+        do spawnShape();
+        do initGrid();
+        let counter = 0;
+        let filledRowCounter = 0;
+        do draw();
+        return this;
+    }
+
+    method void spawnShape() {
+      let shape = Shape.new(0, 4, startRowPixel, startColPixel, squareSize);
+      return;
+    }
+
+     // initializes the grid
+    method void initGrid() {
+
+        var int i, j;
+        var Array row;
+
+        let grid = Array.new(nRows);
+        let i = 0;
+
+        while( i < nRows) {
+            let row = Array.new(nCols);
+            let j = 0;
+            while( j < nCols) {
+                let row[j] = false;
+                let j = j + 1;
+            }
+            let grid[i] = row;
+            let i = i + 1;
+        }
+        return;
+    }
+
+    // disposes of a Board
+    method void dispose() {
+        var int i;
+        var Array row;
+        let i = 0;
+        while( i < nRows) {
+            let row = grid[i];
+            do row.dispose();
+            let i = i + 1;
+        }
+        do Memory.deAlloc(this);
+        return;
+
+    }
+
+    method void drawOutline() {
+      var int endRowPixel, endColPixel;
+      let endRowPixel = startRowPixel + (squareSize * nRows) + 1;
+      let endColPixel = startColPixel + (squareSize * nCols) + 1;
+
+  
+
+      // // horizontal
+      do Screen.drawLine(startColPixel - 1, startRowPixel - 1, endColPixel, startRowPixel - 1);
+      do Screen.drawLine(startColPixel - 1, endRowPixel, endColPixel, endRowPixel);
+      // vertical
+      do Screen.drawLine(startColPixel -1, startRowPixel, startColPixel - 1, endRowPixel);
+      do Screen.drawLine(endColPixel, startRowPixel - 1, endColPixel, endRowPixel);
+      return;
+    }
+
+    method void drawGrid(boolean clear) {
+      var int i, j;
+      var Array row;
+        do Screen.setColor(true);
+        let i = 0;
+        do Output.moveCursor(10, 20);
+        while( i < nRows) {
+          // do Output.printInt(i);
+            let row = grid[i];
+             
+            let j = 0;
+            while(j < nCols) {
+              do Output.moveCursor(4 + i, 4 + j);
+              if (row[j]) {
+                do Output.printInt(1);
+              } else {
+                do Output.printInt(0);
+              }
+              
+              if (row[j]) {
+                do Screen.setColor(true);
+                do Screen.drawRectangle( (0 + j) * squareSize + startColPixel,(0 +  i) * squareSize +  startRowPixel, (0 + j) * squareSize + squareSize + startColPixel, (0 + i) * squareSize + squareSize + startRowPixel);
+              } else {
+                if (clear){
+                do Screen.setColor(false);
+                do Screen.drawRectangle( (0 + j) * squareSize + startColPixel,(0 +  i) * squareSize +  startRowPixel, (0 + j) * squareSize + squareSize + startColPixel, (0 + i) * squareSize + squareSize + startRowPixel);
+                do Screen.setColor(true);
+              do drawOutline();
+                }
+              }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        do Screen.setColor(true);
+        return;
+    }
+
+    method void draw() {
+      do shape.draw(false);
+      do drawGrid(false);
+      do drawOutline();
+      return;
+    }
+
+    method void tick() {
+      do moveShapeDown();
+      return;
+    }
+
+
+
+    method void moveShapeDown() {
+    var Array newPosition, position;
+      var boolean isValidMove;
+      let newPosition = shape.peekMoveDown();
+      let isValidMove = checkValidPosition(newPosition);
+      if (isValidMove) {
+        do shape.moveDown();
+        do drawOutline();
+        do drawGrid(false);
+      } else {
+        let position = shape.peekPosition();
+        do addToGrid(position);
+        do shape.draw(true);
+        do shape.dispose();
+        do drawGrid(true);
+        do spawnShape();
+      }
+       
+      return;
+    }
+
+    method void moveShapeLeft() {
+      var Array newPosition;
+      var boolean isValidMove;
+      let newPosition = shape.peekMoveLeft();
+      let isValidMove = checkValidPosition(newPosition);
+      if (isValidMove) {
+        do shape.moveLeft();
+        do drawOutline();
+      }
+      return;
+    }
+
+     method void moveShapeRight() {
+      var Array newPosition;
+      var boolean isValidMove;
+      let newPosition = shape.peekMoveRight();
+      let isValidMove = checkValidPosition(newPosition);
+      if (isValidMove) {
+        do shape.moveRight();
+        do drawOutline();
+      }
+      return;
+    }
+
+    method boolean checkValidPosition(Array coords) {
+      var boolean loop;
+      var int i, startColPixel, startRowPixel, rowVal, colVal;
+      var Array point, row;
+      let loop = true;
+      let i = 0;
+    	while (loop) {
+        let point = coords[i];
+        let rowVal = point[0];
+        let colVal = point[1];
+   
+        if (rowVal < 0) {
+          return false;
+        }
+
+        if (rowVal > (nRows - 1)) {
+          return false;
+        }
+
+        if (colVal < 0) {
+          return false;
+        }
+
+        if (colVal > (nCols - 1)) {
+          return false;
+        }
+
+        let row = grid[rowVal];
+        if (row[colVal]) {
+          return false;
+        }
+
+        let i = i + 1;
+        if (~(i < 4)) {
+          let loop = false;
+        }
+    	}
+      return true; 
+    }
+
+  method void  addToGrid(Array coords) {
+      var boolean loop, rowFilled;
+      var int i, j, startColPixel, startRowPixel, rowVal, colVal;
+      var Array point, row;
+      let loop = true;
+      let i = 0;
+    	  while (loop) {
+        let point = coords[i];
+        let rowVal = point[0];
+        let colVal = point[1];
+        
+        let row = grid[rowVal];
+        let row[colVal] = true;
+        let i = i + 1;
+        if (~(i < 4)) {
+          let loop = false;
+        }
+    	}
+
+      do simplifyGrid();
+     
+      return; 
+    }
+
+    method void simplifyGrid() {
+     // check if row is filled
+        var int i, rowNo, rowToRemove;
+        var boolean foundRow;
+        let i = 0;
+        let rowToRemove = findFilledRow();
+        // while (rowToRemove > -1) {
+          do clearRow(rowToRemove);
+          let rowToRemove = findFilledRow();
+        // }
+
+        return;
+    }
+
+    method int findFilledRow() {
+       // check if row is filled
+        var int i, j, rowNo;
+        var boolean rowFilled;
+        var Array row;
+        let i = 0;
+
+        while( i < nRows) {
+          // do Output.printInt(i);
+            let row = grid[i];
+            let rowFilled = true;
+            let j = 0;
+            while(j < nCols) {
+           
+            if (~row[j]) {
+              let rowFilled = false;
+              let rowNo = i;
+            }
+                let j = j + 1;
+            }
+            if (rowFilled) {
+               do Output.moveCursor(22 , 20+ filledRowCounter);
+                do Output.printInt(i);
+              
+              let filledRowCounter = filledRowCounter + 2;
+              return i;
+            }
+            let i = i + 1;
+        }
+        let filledRowCounter = 0;
+
+        return -1;
+    }
+
+    method void clearRow(int rowToClear) {
+      var int j, i, startColPixel, startRowPixel, rowVal, colVal, rowToClear;
+      var Array point, row, prevRow, curRow;
+
+      // shift rows up
+        let i = rowToClear;
+          while( i > 0) {
+          let j = 0;
+          let prevRow = grid[i - 1];
+          let curRow = grid[i];
+          while (j < nCols) {
+            do Output.moveCursor(4 + i, 45 + j);
+            let curRow[j] = prevRow[j];
+            if (prevRow[j]) {
+              do Output.printInt(1);
+            } else {
+              do Output.printInt(0);
+            }
+            let j = j + 1;
+          }
+            
+       
+          let i = i - 1;
+        }
+
+
+        let rowToClear = 0;
+        do Screen.setColor(false);
+        let row = grid[rowToClear];
+        let j = 0;
+         let row = Array.new(nCols);
+            let j = 0;
+            while( j < nCols) {
+                let row[j] = false;
+                let j = j + 1;
+            }
+            let grid[rowToClear] = row;
+         return;
+    }
+
+    // // reader methods
+    // method int nRows() {
+    //     return nRows;
+    // }
+    // method int nCols() {
+    //     return nCols;
+    // }
+    // method int foodX() {
+    //     return foodX;
+    // }
+    // method int foodY() {
+    //     return foodY;
+    // }
+
+    // // grid access methods
+    // method void setOccupied(int x, int y, boolean occupied) {
+    //     var Array xGrid;
+    //     let xGrid = grid[x];
+    //     let xGrid[y] = occupied;
+    //     return;
+    // }
+
+    // method boolean checkOccupied(int x, int y) {
+    //     var Array xGrid;
+    //     let xGrid = grid[x];
+    //     if( xGrid[y] ) {
+    //         return true;
+    //     }
+    //     else {
+    //         return false;
+    //     }
+    // }
+
+    // // draws the status line
+    // // Level: 0___ [PAUSED] #__ Score: 0_______  x__ y__  Length: 0___
+    // // 0           12       21  25               42  46   52
+    // method void drawStatus() {
+
+    //     var Snake snake;
+    //     var String tString;
+
+    //     do Output.moveCursor(22, 0);
+    //     let tString = "Level: ";
+    //     do Output.printString(tString);
+    //     do tString.dispose();
+    //     do Output.printInt(game.getLevel());
+    //     do Output.moveCursor(22, 25);
+    //     let tString = "Score: ";
+    //     do Output.printString(tString);
+    //     do tString.dispose();
+    //     do Output.printInt(game.getScore());
+    //     do Output.moveCursor(22, 52);
+    //     let tString = "Length: ";
+    //     do Output.printString(tString);
+    //     do tString.dispose();
+    //     let snake = game.getSnake();
+    //     do Output.printInt(snake.getLength());
+    //     if(game.getPaused()) {
+    //         do drawPaused();
+    //     }
+    //     else {
+    //         do clearPaused();
+    //     }
+
+    //     return;
+
+    // }
+
+
+}

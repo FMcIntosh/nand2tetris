@@ -1,0 +1,181 @@
+// the Snake game grid.  Hack's screen is 512x256 pixels, but a single
+// pixel is too fine for a user to control, so we use 4x4 pixel blocks,
+// turning the screen into a 128x64 grid we also need a status line.  The
+// Hack screen can have 23x64 characters of text, so each line takes a
+// bit over 11 pixels.  We reserve the bottom 16 pixels, leaving 512x240
+// for game use
+
+class Board {
+
+    // the size of the grid
+    field int nRows, nCols, startRowPixel, startColPixel, squareSize;
+    
+
+    // a two-dimensional array that tells us where the snake is
+    field Array grid;
+    field Shape shape;
+
+    // creates a new Board given a pixel size
+    constructor Board new() {
+        let nRows = 20;
+        let nCols = 12;
+        let startRowPixel= 50;
+        let startColPixel = 50;
+        let squareSize = 8;
+        let shape = Shape.new(10, 10, squareSize);
+        do initGrid();
+        do draw();
+        return this;
+    }
+
+     // initializes the grid
+    method void initGrid() {
+
+        var int i, j;
+        var Array row;
+
+        let grid = Array.new(nRows);
+        let i = 0;
+
+        while( i < nRows ) {
+            let row = Array.new(nCols);
+            let j = 0;
+            while( j < nCols ) {
+                let row[j] = false;
+                let j = j + 1;
+            }
+            let grid[i] = row;
+            let i = i + 1;
+        }
+        return;
+    }
+
+    // disposes of a Board
+    method void dispose() {
+        var int i;
+        var Array row;
+        let i = 0;
+        while( i < nRows ) {
+            let row = grid[i];
+            do row.dispose();
+            let i = i + 1;
+        }
+        do Memory.deAlloc(this);
+        return;
+
+    }
+
+    method void drawOutline() {
+      var int endRowPixel, endColPixel;
+      let endRowPixel = startRowPixel + (squareSize * nRows);
+      let endColPixel = startColPixel + (squareSize * nCols);
+
+  
+
+      // // horizontal
+      do Screen.drawLine(startColPixel, startRowPixel, endColPixel, startRowPixel);
+      do Screen.drawLine(startColPixel, endRowPixel, endColPixel, endRowPixel);
+      // vertical
+      do Screen.drawLine(startColPixel, startRowPixel, startColPixel, endRowPixel);
+      do Screen.drawLine(endColPixel, startRowPixel, endColPixel, endRowPixel);
+      return;
+    }
+
+    method void draw() {
+      do drawOutline();
+      do shape.draw();
+      // var int startX, startY;
+     
+      //  var int i;
+      //   var Array row;
+
+      //   let i = 0;
+      //   while( i < nRows ) {
+      //       let row = grid[i];
+      //       do row.dispose();
+      //       let i = i + 1;
+      //   }
+      return;
+    }
+
+    // method void tick() {
+    //   // do moveShapeDown();
+    //   return;
+    // }
+
+    // method void moveShapeDown() {
+    //   do shape.moveDown();
+    //   return;
+    // }
+   
+
+    // // reader methods
+    // method int nRows() {
+    //     return nRows;
+    // }
+    // method int nCols() {
+    //     return nCols;
+    // }
+    // method int foodX() {
+    //     return foodX;
+    // }
+    // method int foodY() {
+    //     return foodY;
+    // }
+
+    // // grid access methods
+    // method void setOccupied(int x, int y, boolean occupied) {
+    //     var Array xGrid;
+    //     let xGrid = grid[x];
+    //     let xGrid[y] = occupied;
+    //     return;
+    // }
+
+    // method boolean checkOccupied(int x, int y) {
+    //     var Array xGrid;
+    //     let xGrid = grid[x];
+    //     if( xGrid[y] ) {
+    //         return true;
+    //     }
+    //     else {
+    //         return false;
+    //     }
+    // }
+
+    // // draws the status line
+    // // Level: 0___ [PAUSED] #__ Score: 0_______  x__ y__  Length: 0___
+    // // 0           12       21  25               42  46   52
+    // method void drawStatus() {
+
+    //     var Snake snake;
+    //     var String tString;
+
+    //     do Output.moveCursor(22, 0);
+    //     let tString = "Level: ";
+    //     do Output.printString(tString);
+    //     do tString.dispose();
+    //     do Output.printInt(game.getLevel());
+    //     do Output.moveCursor(22, 25);
+    //     let tString = "Score: ";
+    //     do Output.printString(tString);
+    //     do tString.dispose();
+    //     do Output.printInt(game.getScore());
+    //     do Output.moveCursor(22, 52);
+    //     let tString = "Length: ";
+    //     do Output.printString(tString);
+    //     do tString.dispose();
+    //     let snake = game.getSnake();
+    //     do Output.printInt(snake.getLength());
+    //     if(game.getPaused()) {
+    //         do drawPaused();
+    //     }
+    //     else {
+    //         do clearPaused();
+    //     }
+
+    //     return;
+
+    // }
+
+
+}
