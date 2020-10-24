@@ -46,48 +46,50 @@ class Tetris {
 
    /** Runs the game: handles the user's inputs and moves the square accordingly */
    method void run() {
-      var char key;  // the key currently pressed by the user
-      var boolean exit, moved;
+      var char key, pressedKey; 
+      var boolean exit, moved, pressing;
       var int clock, TICK_COUNT;
       let clock = 0;
       let moved = false;
       let exit = false;
-      let TICK_COUNT = 2000;
+      let TICK_COUNT = 10000;
 
       
       while (~exit) {
         let key = Keyboard.keyPressed();
         if ((key = 0)) {
-          let moved = false;
+          
         }
         if (~(key = 0)){
-          if (~moved){
-          let moved = true;
-          if (key = 81)  { let exit = true; }     // q key
-          if (key = 131) { let direction = 1; }   // up arrow
-          if (key = 133) { let direction = 2; }   // down arrow
-          if (key = 130) { do board.moveShapeLeft();}   // left arrow
-          if (key = 132) { do board.moveShapeRight(); }   // right arro}
-}
+          let pressedKey = key;
+          if (~pressing){
+            // set pressed key and do action
+            let pressing = true;
+             if (pressedKey = 81)  { let exit = true; }     // q pressedKey
+              if (pressedKey = 131) { do board.rotateShape(); }   // up arrow
+              if (pressedKey = 133) { let direction = 2; }   // down arrow
+              if (pressedKey = 130) { do board.moveShapeLeft();}   // left arrow
+              if (pressedKey = 132) { do board.moveShapeRight(); }   // right arrow}
+              if (pressedKey = 32) { do board.dropShape(); }   // space}
+          }
         }
+
+        if (key = 0){
+          if (pressing) {
+            // /clear pressed key
+              let pressing = false;
+              let pressedKey = 0;
+            }
+          }
             let clock = clock + 1;
 
 
          // waits for a key to be pressed
            if (clock = TICK_COUNT) {
-             let moved = false;
              let clock = 0;
-                let key = Keyboard.keyPressed();
-        
-             do board.tick();
-
+              let key = Keyboard.keyPressed();
+              let exit = board.tick();
             }
-
-         // waits for the key to be released
-        //  while (~(key = 0)) {
-        //     let key = Keyboard.keyPressed();
-        //     do moveSquare();
-        //  }
 
      } // while
      return;

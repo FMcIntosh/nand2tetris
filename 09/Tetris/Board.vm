@@ -1,8 +1,8 @@
 function Board.new 0
-push constant 9
+push constant 13
 call Memory.alloc 1
 pop pointer 0
-push constant 18
+push constant 17
 pop this 0
 push constant 12
 pop this 1
@@ -10,18 +10,69 @@ push constant 10
 pop this 2
 push constant 200
 pop this 3
-push constant 12
+push constant 14
 pop this 4
+push constant 0
+pop this 5
+push constant 0
+pop this 6
+push constant 0
+pop this 10
+push constant 5
+call String.new 1
+push constant 83
+call String.appendChar 2
+push constant 99
+call String.appendChar 2
+push constant 111
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+pop this 7
+push constant 9
+call String.new 1
+push constant 71
+call String.appendChar 2
+push constant 65
+call String.appendChar 2
+push constant 77
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 79
+call String.appendChar 2
+push constant 86
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+push constant 82
+call String.appendChar 2
+pop this 8
+push constant 6
+call String.new 1
+push constant 84
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+push constant 84
+call String.appendChar 2
+push constant 82
+call String.appendChar 2
+push constant 73
+call String.appendChar 2
+push constant 83
+call String.appendChar 2
+pop this 9
 push pointer 0
 call Board.spawnShape 1
 pop temp 0
 push pointer 0
 call Board.initGrid 1
 pop temp 0
-push constant 0
-pop this 5
-push constant 0
-pop this 6
 push pointer 0
 call Board.draw 1
 pop temp 0
@@ -36,7 +87,7 @@ push this 2
 push this 3
 push this 4
 call Shape.new 5
-pop this 8
+pop this 12
 push constant 0
 return
 function Board.initGrid 3
@@ -44,7 +95,7 @@ push argument 0
 pop pointer 0
 push this 0
 call Array.new 1
-pop this 7
+pop this 11
 push constant 0
 pop local 0
 label WHILE_EXP0
@@ -79,7 +130,7 @@ pop local 1
 goto WHILE_EXP1
 label WHILE_END1
 push local 0
-push this 7
+push this 11
 add
 push local 2
 pop temp 0
@@ -106,7 +157,7 @@ lt
 not
 if-goto WHILE_END0
 push local 0
-push this 7
+push this 11
 add
 pop pointer 1
 push that 0
@@ -125,7 +176,7 @@ call Memory.deAlloc 1
 pop temp 0
 push constant 0
 return
-function Board.drawOutline 2
+function Board.drawOutline 7
 push argument 0
 pop pointer 0
 push this 2
@@ -133,55 +184,69 @@ push this 4
 push this 0
 call Math.multiply 2
 add
-push constant 1
-add
 pop local 0
 push this 3
 push this 4
 push this 1
 call Math.multiply 2
 add
+pop local 1
+push constant 0
+pop local 4
+label WHILE_EXP0
+push local 4
+push this 0
 push constant 1
 add
-pop local 1
+lt
+not
+if-goto WHILE_END0
+push this 2
+push this 4
+push local 4
+call Math.multiply 2
+add
+pop local 2
 push this 3
-push constant 1
-sub
-push this 2
-push constant 1
-sub
+push local 2
 push local 1
-push this 2
-push constant 1
-sub
+push local 2
 call Screen.drawLine 4
 pop temp 0
-push this 3
+push local 4
 push constant 1
-sub
-push local 0
-push local 1
-push local 0
-call Screen.drawLine 4
-pop temp 0
-push this 3
+add
+pop local 4
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+pop local 5
+label WHILE_EXP1
+push local 5
+push this 1
 push constant 1
-sub
+add
+lt
+not
+if-goto WHILE_END1
+push this 3
+push this 4
+push local 5
+call Math.multiply 2
+add
+pop local 3
+push local 3
 push this 2
-push this 3
-push constant 1
-sub
+push local 3
 push local 0
 call Screen.drawLine 4
 pop temp 0
-push local 1
-push this 2
+push local 5
 push constant 1
-sub
-push local 1
-push local 0
-call Screen.drawLine 4
-pop temp 0
+add
+pop local 5
+goto WHILE_EXP1
+label WHILE_END1
 push constant 0
 return
 function Board.drawGrid 3
@@ -193,10 +258,6 @@ call Screen.setColor 1
 pop temp 0
 push constant 0
 pop local 0
-push constant 10
-push constant 20
-call Output.moveCursor 2
-pop temp 0
 label WHILE_EXP0
 push local 0
 push this 0
@@ -204,7 +265,7 @@ lt
 not
 if-goto WHILE_END0
 push local 0
-push this 7
+push this 11
 add
 pop pointer 1
 push that 0
@@ -217,14 +278,6 @@ push this 1
 lt
 not
 if-goto WHILE_END1
-push constant 4
-push local 0
-add
-push constant 4
-push local 1
-add
-call Output.moveCursor 2
-pop temp 0
 push local 1
 push local 2
 add
@@ -233,25 +286,51 @@ push that 0
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push constant 1
-call Output.printInt 1
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push constant 0
+push local 1
+add
+push this 4
+call Math.multiply 2
+push this 3
+add
+push constant 0
+push local 0
+add
+push this 4
+call Math.multiply 2
+push this 2
+add
+push constant 0
+push local 1
+add
+push this 4
+call Math.multiply 2
+push this 4
+add
+push this 3
+add
+push constant 0
+push local 0
+add
+push this 4
+call Math.multiply 2
+push this 4
+add
+push this 2
+add
+call Screen.drawRectangle 4
 pop temp 0
 goto IF_END0
 label IF_FALSE0
-push constant 0
-call Output.printInt 1
-pop temp 0
-label IF_END0
-push local 1
-push local 2
-add
-pop pointer 1
-push that 0
+push argument 1
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
 push constant 0
-not
 call Screen.setColor 1
 pop temp 0
 push constant 0
@@ -288,58 +367,12 @@ push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
-goto IF_END1
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
 label IF_FALSE1
-push argument 1
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
-push constant 0
-call Screen.setColor 1
-pop temp 0
-push constant 0
-push local 1
-add
-push this 4
-call Math.multiply 2
-push this 3
-add
-push constant 0
-push local 0
-add
-push this 4
-call Math.multiply 2
-push this 2
-add
-push constant 0
-push local 1
-add
-push this 4
-call Math.multiply 2
-push this 4
-add
-push this 3
-add
-push constant 0
-push local 0
-add
-push this 4
-call Math.multiply 2
-push this 4
-add
-push this 2
-add
-call Screen.drawRectangle 4
-pop temp 0
-push constant 0
-not
-call Screen.setColor 1
-pop temp 0
-push pointer 0
-call Board.drawOutline 1
-pop temp 0
-label IF_FALSE2
-label IF_END1
+label IF_END0
 push local 1
 push constant 1
 add
@@ -361,7 +394,7 @@ return
 function Board.draw 0
 push argument 0
 pop pointer 0
-push this 8
+push this 12
 push constant 0
 call Shape.draw 2
 pop temp 0
@@ -372,6 +405,35 @@ pop temp 0
 push pointer 0
 call Board.drawOutline 1
 pop temp 0
+push pointer 0
+call Board.drawScore 1
+pop temp 0
+push constant 2
+push constant 4
+call Output.moveCursor 2
+pop temp 0
+push this 9
+call Output.printString 1
+pop temp 0
+push constant 0
+return
+function Board.drawScore 0
+push argument 0
+pop pointer 0
+push constant 4
+push constant 4
+call Output.moveCursor 2
+pop temp 0
+push this 7
+call Output.printString 1
+pop temp 0
+push constant 6
+push constant 4
+call Output.moveCursor 2
+pop temp 0
+push this 5
+call Output.printInt 1
+pop temp 0
 push constant 0
 return
 function Board.tick 0
@@ -380,12 +442,12 @@ pop pointer 0
 push pointer 0
 call Board.moveShapeDown 1
 pop temp 0
-push constant 0
+push this 10
 return
 function Board.moveShapeDown 3
 push argument 0
 pop pointer 0
-push this 8
+push this 12
 call Shape.peekMoveDown 1
 pop local 0
 push pointer 0
@@ -396,7 +458,7 @@ push local 2
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push this 8
+push this 12
 call Shape.moveDown 1
 pop temp 0
 push pointer 0
@@ -408,19 +470,19 @@ call Board.drawGrid 2
 pop temp 0
 goto IF_END0
 label IF_FALSE0
-push this 8
+push this 12
 call Shape.peekPosition 1
 pop local 1
 push pointer 0
 push local 1
 call Board.addToGrid 2
 pop temp 0
-push this 8
+push this 12
 push constant 0
 not
 call Shape.draw 2
 pop temp 0
-push this 8
+push this 12
 call Shape.dispose 1
 pop temp 0
 push pointer 0
@@ -429,15 +491,119 @@ not
 call Board.drawGrid 2
 pop temp 0
 push pointer 0
+call Board.drawOutline 1
+pop temp 0
+push this 6
+push constant 1
+add
+pop this 6
+push this 6
+call Random.setSeed 1
+pop temp 0
+push pointer 0
 call Board.spawnShape 1
 pop temp 0
+push local 1
+call Array.dispose 1
+pop temp 0
+push this 12
+call Shape.peekPosition 1
+pop local 1
+push pointer 0
+push local 1
+call Board.checkValidPosition 2
+pop local 2
+push local 2
+not
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+not
+pop this 10
+push constant 10
+push constant 4
+call Output.moveCursor 2
+pop temp 0
+push this 8
+call Output.printString 1
+pop temp 0
+label IF_FALSE1
 label IF_END0
+push constant 0
+return
+function Board.dropShape 3
+push argument 0
+pop pointer 0
+push this 12
+call Shape.peekMoveDown 1
+pop local 0
+push pointer 0
+push local 0
+call Board.checkValidPosition 2
+pop local 2
+label WHILE_EXP0
+push local 2
+not
+if-goto WHILE_END0
+push this 12
+call Shape.moveDown 1
+pop temp 0
+push pointer 0
+call Board.drawOutline 1
+pop temp 0
+push pointer 0
+push constant 0
+call Board.drawGrid 2
+pop temp 0
+push this 12
+call Shape.peekMoveDown 1
+pop local 0
+push pointer 0
+push local 0
+call Board.checkValidPosition 2
+pop local 2
+goto WHILE_EXP0
+label WHILE_END0
+push this 12
+call Shape.peekPosition 1
+pop local 1
+push pointer 0
+push local 1
+call Board.addToGrid 2
+pop temp 0
+push this 12
+push constant 0
+not
+call Shape.draw 2
+pop temp 0
+push this 12
+call Shape.dispose 1
+pop temp 0
+push pointer 0
+push constant 0
+not
+call Board.drawGrid 2
+pop temp 0
+push pointer 0
+call Board.drawOutline 1
+pop temp 0
+push this 6
+push constant 1
+add
+pop this 6
+push this 6
+call Random.setSeed 1
+pop temp 0
+push pointer 0
+call Board.spawnShape 1
+pop temp 0
 push constant 0
 return
 function Board.moveShapeLeft 2
 push argument 0
 pop pointer 0
-push this 8
+push this 12
 call Shape.peekMoveLeft 1
 pop local 0
 push pointer 0
@@ -448,7 +614,7 @@ push local 1
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push this 8
+push this 12
 call Shape.moveLeft 1
 pop temp 0
 push pointer 0
@@ -460,7 +626,7 @@ return
 function Board.moveShapeRight 2
 push argument 0
 pop pointer 0
-push this 8
+push this 12
 call Shape.peekMoveRight 1
 pop local 0
 push pointer 0
@@ -471,8 +637,31 @@ push local 1
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push this 8
+push this 12
 call Shape.moveRight 1
+pop temp 0
+push pointer 0
+call Board.drawOutline 1
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Board.rotateShape 2
+push argument 0
+pop pointer 0
+push this 12
+call Shape.peekRotation 1
+pop local 0
+push pointer 0
+push local 0
+call Board.checkValidPosition 2
+pop local 1
+push local 1
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 12
+call Shape.rotate 1
 pop temp 0
 push pointer 0
 call Board.drawOutline 1
@@ -551,7 +740,7 @@ push constant 0
 return
 label IF_FALSE3
 push local 4
-push this 7
+push this 11
 add
 pop pointer 1
 push that 0
@@ -617,7 +806,7 @@ pop pointer 1
 push that 0
 pop local 7
 push local 6
-push this 7
+push this 11
 add
 pop pointer 1
 push that 0
@@ -660,6 +849,13 @@ pop local 0
 push pointer 0
 call Board.findFilledRow 1
 pop local 2
+label WHILE_EXP0
+push local 2
+push constant 1
+neg
+gt
+not
+if-goto WHILE_END0
 push pointer 0
 push local 2
 call Board.clearRow 2
@@ -667,6 +863,8 @@ pop temp 0
 push pointer 0
 call Board.findFilledRow 1
 pop local 2
+goto WHILE_EXP0
+label WHILE_END0
 push constant 0
 return
 function Board.findFilledRow 5
@@ -681,7 +879,7 @@ lt
 not
 if-goto WHILE_END0
 push local 0
-push this 7
+push this 11
 add
 pop pointer 1
 push that 0
@@ -721,19 +919,6 @@ push local 3
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
-push constant 22
-push constant 20
-push this 6
-add
-call Output.moveCursor 2
-pop temp 0
-push local 0
-call Output.printInt 1
-pop temp 0
-push this 6
-push constant 2
-add
-pop this 6
 push local 0
 return
 label IF_FALSE1
@@ -743,14 +928,27 @@ add
 pop local 0
 goto WHILE_EXP0
 label WHILE_END0
-push constant 0
-pop this 6
 push constant 1
 neg
+return
+function Board.awardPoint 0
+push argument 0
+pop pointer 0
+push this 5
+push constant 1
+add
+pop this 5
+push pointer 0
+call Board.drawScore 1
+pop temp 0
+push constant 0
 return
 function Board.clearRow 11
 push argument 0
 pop pointer 0
+push pointer 0
+call Board.awardPoint 1
+pop temp 0
 push argument 1
 pop local 1
 label WHILE_EXP0
@@ -764,13 +962,13 @@ pop local 0
 push local 1
 push constant 1
 sub
-push this 7
+push this 11
 add
 pop pointer 1
 push that 0
 pop local 9
 push local 1
-push this 7
+push this 11
 add
 pop pointer 1
 push that 0
@@ -781,14 +979,6 @@ push this 1
 lt
 not
 if-goto WHILE_END1
-push constant 4
-push local 1
-add
-push constant 45
-push local 0
-add
-call Output.moveCursor 2
-pop temp 0
 push local 0
 push local 10
 add
@@ -801,23 +991,6 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-push local 0
-push local 9
-add
-pop pointer 1
-push that 0
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push constant 1
-call Output.printInt 1
-pop temp 0
-goto IF_END0
-label IF_FALSE0
-push constant 0
-call Output.printInt 1
-pop temp 0
-label IF_END0
 push local 0
 push constant 1
 add
@@ -836,7 +1009,7 @@ push constant 0
 call Screen.setColor 1
 pop temp 0
 push argument 1
-push this 7
+push this 11
 add
 pop pointer 1
 push that 0
@@ -869,7 +1042,7 @@ pop local 0
 goto WHILE_EXP2
 label WHILE_END2
 push argument 1
-push this 7
+push this 11
 add
 push local 8
 pop temp 0
